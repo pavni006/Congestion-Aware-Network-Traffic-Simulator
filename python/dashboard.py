@@ -1,90 +1,49 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv("..results/sample_output.csv")
+df = pd.read_csv("results/sample_output.csv")
 
-plt.figure(figsize=(12, 6))
-
-plt.plot(
-    df["time"],
-    df["delivered"],
-    linewidth=2,
-    label="Delivered"
+fig, axes = plt.subplots(
+    2,
+    2,
+    figsize=(14, 10)
 )
 
-plt.plot(
-    df["time"],
-    df["created"],
-    linewidth=2,
-    label="Created"
-)
+# Packet Statistics
+axes[0, 0].plot(df["time"], df["created"], label="Created")
+axes[0, 0].plot(df["time"], df["delivered"], label="Delivered")
+axes[0, 0].plot(df["time"], df["waiting"], label="Waiting")
+axes[0, 0].plot(df["time"], df["dropped"], label="Dropped")
 
-plt.plot(
-    df["time"],
-    df["waiting"],
-    linewidth=2,
-    label="Waiting"
-)
+axes[0, 0].set_title("Packet Statistics")
+axes[0, 0].set_xlabel("Time")
+axes[0, 0].set_ylabel("Packets")
+axes[0, 0].grid(True)
+axes[0, 0].legend()
 
-plt.plot(
-    df["time"],
-    df["dropped"],
-    linewidth=2,
-    label="Dropped"
-)
+# Average Latency
+axes[0, 1].plot(df["time"], df["avg_latency"])
 
-plt.title("Packet Statistics")
-plt.xlabel("Time")
-plt.ylabel("Packets")
-plt.grid(True)
-plt.legend()
+axes[0, 1].set_title("Average Latency")
+axes[0, 1].set_xlabel("Time")
+axes[0, 1].set_ylabel("Latency")
+axes[0, 1].grid(True)
 
-plt.show()
+# Throughput
+axes[1, 0].plot(df["time"], df["throughput"])
 
+axes[1, 0].set_title("Throughput")
+axes[1, 0].set_xlabel("Time")
+axes[1, 0].set_ylabel("Packets / Tick")
+axes[1, 0].grid(True)
 
-plt.figure(figsize=(12, 6))
+# Packet Loss
+axes[1, 1].plot(df["time"], df["packet_loss"])
 
-plt.plot(
-    df["time"],
-    df["avg_latency"],
-    linewidth=2
-)
+axes[1, 1].set_title("Packet Loss Rate")
+axes[1, 1].set_xlabel("Time")
+axes[1, 1].set_ylabel("Loss %")
+axes[1, 1].grid(True)
 
-plt.title("Average Latency")
-plt.xlabel("Time")
-plt.ylabel("Latency")
-plt.grid(True)
-
-plt.show()
-
-
-plt.figure(figsize=(12, 6))
-
-plt.plot(
-    df["time"],
-    df["throughput"],
-    linewidth=2
-)
-
-plt.title("Throughput")
-plt.xlabel("Time")
-plt.ylabel("Packets/Tick")
-plt.grid(True)
-
-plt.show()
-
-
-plt.figure(figsize=(12, 6))
-
-plt.plot(
-    df["time"],
-    df["packet_loss"],
-    linewidth=2
-)
-
-plt.title("Packet Loss Rate")
-plt.xlabel("Time")
-plt.ylabel("Loss %")
-plt.grid(True)
-
+plt.tight_layout()
 plt.show()
