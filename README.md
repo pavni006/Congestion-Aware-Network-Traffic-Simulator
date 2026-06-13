@@ -3,121 +3,48 @@
 ![C++](https://img.shields.io/badge/C%2B%2B-17-blue)
 ![Python](https://img.shields.io/badge/Python-3.10+-yellow)
 ![Build](https://img.shields.io/badge/Build-CMake-green)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 A packet-level network simulator built in C++ that models network traffic flow, congestion, routing decisions, link failures, packet drops, and network performance metrics.
 
 ---
 
-## Overview
+## 📌 Overview
 
-Modern computer networks continuously make routing decisions while handling congestion, failures, and varying traffic loads. This project simulates those behaviors by representing a network as a graph of routers and links, where packets are generated, routed, delayed, dropped, or re-routed based on current network conditions.
+Modern networks must dynamically route data while managing varying traffic bursts, queue overhead, and link failures. This project models these behaviors by representing network infrastructures as directed graphs. The core C++ engine tracks packet state changes over a discrete time loop, applying adaptive algorithms to minimize bottlenecks.
 
-The simulator provides insights into:
-
-- Packet routing behavior
-- Network congestion effects
-- Link utilization
-- Dynamic path selection
-- Fault tolerance through rerouting
-- Latency and throughput analysis
-
-The project also includes Python-based visualization tools for analyzing simulation results.
+The framework is decoupled into two explicit processing layers:
+1. **Simulation Engine (C++):** Manages topology memory, graph mutations, routing algorithms, and performance logging.
+2. **Analytics UI (Python):** Ingests execution logs to process, evaluate, and render network health metrics.
 
 ---
 
-## Features
+## 🛠️ Features
 
-### Core Network Simulation
-
-- Graph-based network topology
-- Router and link representation
-- Configurable link capacities
-- Configurable link latencies
-- Bidirectional communication links
-
-### Packet Routing
-
-- Dijkstra shortest-path routing
-- Dynamic route computation
-- Multi-hop packet traversal
-- Packet scheduling with custom arrival times
-
-### Congestion Awareness
-
-- Real-time link utilization tracking
-- Congestion-aware routing cost function
-- Dynamic path recalculation under congestion
-- Adaptive rerouting decisions
-
-### Fault Tolerance
-
-- Link failure simulation
-- Automatic route recomputation
-- Traffic redirection around failed links
-
-### Traffic Management
-
-- Packet waiting queues
-- Capacity-based admission control
-- Packet dropping after excessive waiting
-- Network load tracking
-
-### Performance Analytics
-
-- Average latency calculation
-- Throughput measurement
-- Packet delivery statistics
-- Packet loss rate analysis
-- Simulation history export to CSV
-
-### Visualization
-
-- Python dashboard for simulation metrics
-- Time-series performance graphs
-- Congestion monitoring plots
-- Network analytics using Pandas and Matplotlib
+* **🌐 Core Network Engine:** Builds graph-based network topologies mapping bidirectional routers (nodes) and communication links (edges) with distinct capacity and latency weights.
+* **🎯 Adaptive Routing Solver:** Implements a modified Dijkstra algorithm utilizing dynamic cost metrics to compute alternate paths around saturated lines.
+* **💥 Fault-Tolerance Simulation:** Models runtime edge failures, triggers automatic route recomputation, and handles packet drops gracefully.
+* **📈 Queue & Traffic Controls:** Features admission control systems using resource-tracking queues to block, buffer, or discard packets during high-load intervals.
+* **📊 Analytics Suite:** Exports historical metrics directly to structured CSVs, leveraging a Pandas and Matplotlib dashboard to plot throughput trends and latency heatmaps.
 
 ---
 
-## System Architecture
+## 📐 System Architecture
+
+The simulation isolates high-performance backend calculations from analytics reporting via a structured data pipeline:
 
 ```text
-+-------------------+
-| Packet Generator  |
-+---------+---------+
-          |
-          v
-+-------------------+
-| Simulator Engine  |
-+---------+---------+
-          |
-          v
-+-------------------+
-| Routing Algorithm |
-|  (Dijkstra)       |
-+---------+---------+
-          |
-          v
-+-------------------+
-| Network Graph     |
-| Routers + Links   |
-+---------+---------+
-          |
-          v
-+-------------------+
-| Statistics Engine |
-+---------+---------+
-          |
-          v
-+-------------------+
-| CSV Export        |
-+---------+---------+
-          |
-          v
-+-------------------+
-| Python Dashboard  |
-+-------------------+
++-----------------------+     +------------------------+     +------------------------+
+| 📦 1. TRAFFIC ENGINE  |     | 🧠 2. ROUTING ENGINE   |     | 🕸️ 3. CORE SIMULATOR   |
+| Generates Packets     | --> | Computes Paths         | --> | Mutates Adjacency List |
+| Schedules Arrival     |     | Cost = Latency + Load  |     | Handles Edge Failures  |
++-----------------------+     +------------------------+     +------------------------+
+                                                                         |
+                                                                         v
++-----------------------+     +------------------------+     +------------------------+
+| 📊 6. UI DASHBOARD    |     | 📄 5. LOGGING LAYER    |     | 📈 4. STATISTICS ENGINE|
+| Renders Matplotlib Plots| <-- | Exports Results        | <-- | Aggregates Latency     |
+| Pandas Data Analytics |     | results/simulation.csv |     | Calculates Throughput  |
++-----------------------+     +------------------------+     +------------------------+
 ```
 
 ---
@@ -184,23 +111,20 @@ The simulator tracks:
 ```text
 Congestion-Aware-Network-Traffic-Simulator
 │
-├── cpp
-│   ├── Graph.cpp
-│   ├── Graph.h
-│   ├── Simulator.cpp
-│   ├── Simulator.h
-│   ├── CongestionDijkstra.cpp
-│   ├── CongestionDijkstra.h
-│   └── main.cpp
+├── cpp/
+│   ├── Graph.cpp / .h             # Adjacency list and graph definitions
+│   ├── Simulator.cpp / .h         # Discrete event scheduling loop
+│   ├── CongestionDijkstra.cpp/.h  # Adaptive routing algorithm logic
+│   └── main.cpp                   # Simulation runner and data exporter
 │
-├── python
-│   └── dashboard.py
+├── python/
+│   └── dashboard.py               # Data analytics and visualization framework
 │
-├── results
-│   └── sample_output.csv
+├── results/
+│   └── sample_output.csv          # Generated simulation performance logs
 │
-├── CMakeLists.txt
-├── requirements.txt
+├── CMakeLists.txt                 # C++ project build specification
+├── requirements.txt               # Python visualization environment tools
 └── README.md
 ```
 
